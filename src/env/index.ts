@@ -9,4 +9,12 @@ const envSchema = z.object({
   PORT: z.number().default(3333),
 })
 
-export const env = envSchema.parse(process.env)
+const _env = envSchema.safeParse(process.env)
+
+if (!_env.success) {
+  console.error('Environment variables validation failed', _env.error.format())
+
+  throw new Error('Environment variables validation failed')
+}
+
+export const env = _env.data
